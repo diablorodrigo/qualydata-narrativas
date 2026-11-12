@@ -19,10 +19,10 @@
 - Mostrar un caso: una narrativa emergente que nace en una ráfaga nocturna de cuentas creadas días antes.
 
 ## 4. Resultados (30 s)
-- En el set de práctica: **54,3 de 55 puntos automáticos**, contra 16,8 de la línea base.
-- Narrativas 29,9 de 30 y coordinación **24,3 de 25** (recall 99%, incluida la operación con actividad de cobertura).
+- En el set de práctica: **54,9 de 55 puntos automáticos**, contra 16,8 de la línea base.
+- Narrativas 29,9 de 30 y coordinación **25,0 de 25** (precisión y recall del 100%, incluida la operación con actividad de cobertura).
 - Lo probamos con temas que no vio (51,6), sin el clasificador entrenado (51,6) y con datos sucios (53,6).
-- Set final: 150.000 comentarios en 36 segundos, sin IA ni APIs pagas. 12 narrativas, 3 emergentes (la constructora del dique, el cierre de la comisaría y las entradas del festival), y 3 operaciones coordinadas con 99 cuentas, como la que instala de madrugada el rumor del cierre de la comisaría del barrio Norte. Corrido dos veces, resultado idéntico.
+- Set final: 150.000 comentarios en unos 30 segundos, sin IA ni APIs pagas. 12 narrativas, 3 emergentes (la constructora del dique, el cierre de la comisaría y las entradas del festival), y 3 operaciones coordinadas con 99 cuentas, como la que instala de madrugada el rumor del cierre de la comisaría del barrio Norte. Corrido dos veces, resultado idéntico.
 
 ## 5. Costo, escala y almacenamiento (40 s)
 - **Unos 40 segundos para 200.000 comentarios** en CPU, sin GPU. Costo de IA cero: `costo.json` lo registra.

@@ -2779,7 +2779,7 @@ c0002777,n09,apoya
 c0002778,ninguna,
 c0002779,n03,rechaza
 c0002780,n03,apoya
-c0002781,ninguna,
+c0002781,n07,rechaza
 c0002782,n02,rechaza
 c0002783,n05,rechaza
 c0002784,n03,apoya
@@ -30977,7 +30977,7 @@ c0030975,n07,rechaza
 c0030976,n03,apoya
 c0030977,n07,rechaza
 c0030978,n01,apoya
-c0030979,n07,apoya
+c0030979,n07,rechaza
 c0030980,n03,apoya
 c0030981,n02,rechaza
 c0030982,ninguna,
@@ -43259,7 +43259,7 @@ c0043257,n08,apoya
 c0043258,n02,apoya
 c0043259,n03,rechaza
 c0043260,n05,apoya
-c0043261,ninguna,
+c0043261,n02,rechaza
 c0043262,ninguna,
 c0043263,n01,rechaza
 c0043264,ninguna,
@@ -43611,7 +43611,7 @@ c0043609,ninguna,
 c0043610,n07,apoya
 c0043611,n01,rechaza
 c0043612,n01,rechaza
-c0043613,n02,apoya
+c0043613,n02,rechaza
 c0043614,n02,rechaza
 c0043615,n02,rechaza
 c0043616,n01,rechaza
@@ -43905,7 +43905,7 @@ c0043903,n05,apoya
 c0043904,n05,apoya
 c0043905,ninguna,
 c0043906,n01,apoya
-c0043907,ninguna,
+c0043907,n02,rechaza
 c0043908,n04,apoya
 c0043909,n05,rechaza
 c0043910,n03,apoya
@@ -47134,7 +47134,7 @@ c0047132,ninguna,
 c0047133,n03,apoya
 c0047134,n03,apoya
 c0047135,n07,rechaza
-c0047136,ninguna,
+c0047136,n02,rechaza
 c0047137,n04,apoya
 c0047138,n04,apoya
 c0047139,n07,apoya
@@ -47194,7 +47194,7 @@ c0047192,n01,apoya
 c0047193,ninguna,
 c0047194,n05,apoya
 c0047195,n02,apoya
-c0047196,ninguna,
+c0047196,n02,rechaza
 c0047197,n07,apoya
 c0047198,ninguna,
 c0047199,n03,rechaza
@@ -57174,7 +57174,7 @@ c0057172,n02,apoya
 c0057173,ninguna,
 c0057174,n03,apoya
 c0057175,n11,apoya
-c0057176,ninguna,
+c0057176,n11,apoya
 c0057177,n11,apoya
 c0057178,n11,apoya
 c0057179,ninguna,
@@ -57188,8 +57188,8 @@ c0057186,n11,apoya
 c0057187,n11,apoya
 c0057188,ninguna,
 c0057189,n02,apoya
-c0057190,ninguna,
-c0057191,ninguna,
+c0057190,n11,apoya
+c0057191,n11,apoya
 c0057192,n03,rechaza
 c0057193,ninguna,
 c0057194,n02,apoya
@@ -59295,7 +59295,7 @@ c0059293,n04,apoya
 c0059294,n10,rechaza
 c0059295,n05,apoya
 c0059296,n08,apoya
-c0059297,ninguna,
+c0059297,n11,apoya
 c0059298,ninguna,
 c0059299,n04,rechaza
 c0059300,n01,apoya
@@ -63096,7 +63096,7 @@ c0063094,n08,rechaza
 c0063095,n04,apoya
 c0063096,n03,apoya
 c0063097,ninguna,
-c0063098,n11,apoya
+c0063098,n11,rechaza
 c0063099,n03,apoya
 c0063100,n01,rechaza
 c0063101,n01,apoya
@@ -66907,7 +66907,7 @@ c0066905,n05,apoya
 c0066906,ninguna,
 c0066907,n08,apoya
 c0066908,n10,rechaza
-c0066909,ninguna,
+c0066909,n11,rechaza
 c0066910,n03,apoya
 c0066911,n10,rechaza
 c0066912,n11,apoya
@@ -68321,7 +68321,7 @@ c0068319,n05,apoya
 c0068320,n05,rechaza
 c0068321,n05,apoya
 c0068322,n08,apoya
-c0068323,ninguna,
+c0068323,n11,rechaza
 c0068324,n06,rechaza
 c0068325,n05,apoya
 c0068326,n10,apoya
@@ -68623,7 +68623,7 @@ c0068621,n10,rechaza
 c0068622,ninguna,
 c0068623,n08,apoya
 c0068624,n06,apoya
-c0068625,ninguna,
+c0068625,n11,rechaza
 c0068626,n04,rechaza
 c0068627,n04,rechaza
 c0068628,n04,rechaza
@@ -74249,7 +74249,7 @@ c0074247,n04,rechaza
 c0074248,ninguna,
 c0074249,n09,apoya
 c0074250,n04,rechaza
-c0074251,ninguna,
+c0074251,n11,rechaza
 c0074252,n05,rechaza
 c0074253,n05,rechaza
 c0074254,n09,rechaza
@@ -77753,7 +77753,7 @@ c0077751,ninguna,
 c0077752,n05,apoya
 c0077753,n04,rechaza
 c0077754,ninguna,
-c0077755,ninguna,
+c0077755,n11,rechaza
 c0077756,n05,apoya
 c0077757,n02,rechaza
 c0077758,n06,rechaza
@@ -79607,7 +79607,7 @@ c0079605,n01,rechaza
 c0079606,n06,rechaza
 c0079607,n03,apoya
 c0079608,n01,rechaza
-c0079609,ninguna,
+c0079609,n11,rechaza
 c0079610,n02,rechaza
 c0079611,ninguna,
 c0079612,n04,rechaza
@@ -79785,7 +79785,7 @@ c0079783,n09,rechaza
 c0079784,ninguna,
 c0079785,n05,rechaza
 c0079786,n08,apoya
-c0079787,ninguna,
+c0079787,n02,rechaza
 c0079788,n06,apoya
 c0079789,ninguna,
 c0079790,n02,apoya
@@ -81101,7 +81101,7 @@ c0081099,n11,rechaza
 c0081100,ninguna,
 c0081101,n01,apoya
 c0081102,n05,apoya
-c0081103,ninguna,
+c0081103,n02,rechaza
 c0081104,n02,apoya
 c0081105,n06,rechaza
 c0081106,ninguna,
@@ -81296,7 +81296,7 @@ c0081294,n02,apoya
 c0081295,ninguna,
 c0081296,n01,rechaza
 c0081297,n01,apoya
-c0081298,ninguna,
+c0081298,n11,rechaza
 c0081299,n10,rechaza
 c0081300,n04,apoya
 c0081301,n02,apoya
@@ -82055,7 +82055,7 @@ c0082053,n05,rechaza
 c0082054,n02,rechaza
 c0082055,n04,apoya
 c0082056,n03,apoya
-c0082057,n11,apoya
+c0082057,n11,rechaza
 c0082058,n01,rechaza
 c0082059,ninguna,
 c0082060,n02,rechaza
@@ -85916,7 +85916,7 @@ c0085914,ninguna,
 c0085915,ninguna,
 c0085916,n01,apoya
 c0085917,n06,apoya
-c0085918,ninguna,
+c0085918,n02,rechaza
 c0085919,n02,apoya
 c0085920,ninguna,
 c0085921,n03,apoya
@@ -88735,7 +88735,7 @@ c0088733,ninguna,
 c0088734,n07,apoya
 c0088735,n06,apoya
 c0088736,n05,rechaza
-c0088737,ninguna,
+c0088737,n11,rechaza
 c0088738,n01,rechaza
 c0088739,n07,apoya
 c0088740,ninguna,
@@ -88755,7 +88755,7 @@ c0088753,n06,apoya
 c0088754,n02,rechaza
 c0088755,n03,apoya
 c0088756,n03,rechaza
-c0088757,n07,apoya
+c0088757,n07,rechaza
 c0088758,n01,rechaza
 c0088759,n03,apoya
 c0088760,n03,apoya
@@ -89113,7 +89113,7 @@ c0089111,ninguna,
 c0089112,n05,rechaza
 c0089113,n08,apoya
 c0089114,n06,apoya
-c0089115,ninguna,
+c0089115,n11,rechaza
 c0089116,n07,apoya
 c0089117,ninguna,
 c0089118,ninguna,
@@ -90756,7 +90756,7 @@ c0090754,n06,rechaza
 c0090755,n05,apoya
 c0090756,n09,apoya
 c0090757,ninguna,
-c0090758,n07,apoya
+c0090758,n07,rechaza
 c0090759,n07,rechaza
 c0090760,n09,rechaza
 c0090761,ninguna,
@@ -92077,7 +92077,7 @@ c0092075,n01,rechaza
 c0092076,ninguna,
 c0092077,n03,apoya
 c0092078,n01,rechaza
-c0092079,ninguna,
+c0092079,n11,rechaza
 c0092080,n09,apoya
 c0092081,n02,apoya
 c0092082,n10,apoya
@@ -94218,7 +94218,7 @@ c0094216,n11,apoya
 c0094217,n01,apoya
 c0094218,n06,rechaza
 c0094219,ninguna,
-c0094220,n11,apoya
+c0094220,n11,rechaza
 c0094221,n06,apoya
 c0094222,n09,rechaza
 c0094223,n06,apoya
@@ -94385,7 +94385,7 @@ c0094383,n11,rechaza
 c0094384,n02,apoya
 c0094385,n06,rechaza
 c0094386,n04,rechaza
-c0094387,ninguna,
+c0094387,n11,rechaza
 c0094388,n02,apoya
 c0094389,n01,apoya
 c0094390,n01,apoya
@@ -94643,7 +94643,7 @@ c0094641,ninguna,
 c0094642,n02,rechaza
 c0094643,n04,rechaza
 c0094644,n01,rechaza
-c0094645,ninguna,
+c0094645,n11,rechaza
 c0094646,n04,rechaza
 c0094647,n06,rechaza
 c0094648,n06,rechaza
@@ -94883,20 +94883,20 @@ c0094881,n11,apoya
 c0094882,n11,apoya
 c0094883,n11,apoya
 c0094884,ninguna,
-c0094885,ninguna,
+c0094885,n11,apoya
 c0094886,n11,apoya
 c0094887,n02,rechaza
-c0094888,ninguna,
+c0094888,n11,apoya
 c0094889,ninguna,
 c0094890,n11,apoya
-c0094891,ninguna,
+c0094891,n11,apoya
 c0094892,n11,apoya
 c0094893,n11,apoya
-c0094894,ninguna,
+c0094894,n11,apoya
 c0094895,n11,apoya
-c0094896,ninguna,
+c0094896,n11,apoya
 c0094897,n11,apoya
-c0094898,ninguna,
+c0094898,n11,apoya
 c0094899,n01,rechaza
 c0094900,n07,apoya
 c0094901,n11,rechaza
@@ -95380,7 +95380,7 @@ c0095378,ninguna,
 c0095379,n07,apoya
 c0095380,n01,apoya
 c0095381,n11,apoya
-c0095382,ninguna,
+c0095382,n11,rechaza
 c0095383,n05,apoya
 c0095384,n05,rechaza
 c0095385,ninguna,
@@ -97177,7 +97177,7 @@ c0097175,n09,rechaza
 c0097176,n04,apoya
 c0097177,n06,apoya
 c0097178,n07,rechaza
-c0097179,ninguna,
+c0097179,n11,rechaza
 c0097180,ninguna,
 c0097181,n06,apoya
 c0097182,ninguna,
@@ -100312,7 +100312,7 @@ c0100310,n02,rechaza
 c0100311,n02,rechaza
 c0100312,n04,rechaza
 c0100313,n02,apoya
-c0100314,ninguna,
+c0100314,n11,rechaza
 c0100315,n06,rechaza
 c0100316,n06,apoya
 c0100317,n02,rechaza
@@ -100829,7 +100829,7 @@ c0100827,n02,apoya
 c0100828,n11,rechaza
 c0100829,n06,apoya
 c0100830,n01,apoya
-c0100831,ninguna,
+c0100831,n11,rechaza
 c0100832,n06,apoya
 c0100833,ninguna,
 c0100834,n05,apoya
@@ -101281,7 +101281,7 @@ c0101279,n04,apoya
 c0101280,n01,rechaza
 c0101281,n05,apoya
 c0101282,n05,apoya
-c0101283,n11,apoya
+c0101283,n11,rechaza
 c0101284,n06,apoya
 c0101285,n01,apoya
 c0101286,n01,apoya
@@ -101529,7 +101529,7 @@ c0101527,n05,rechaza
 c0101528,ninguna,
 c0101529,ninguna,
 c0101530,n04,apoya
-c0101531,ninguna,
+c0101531,n11,rechaza
 c0101532,n06,apoya
 c0101533,ninguna,
 c0101534,n02,rechaza
@@ -101824,7 +101824,7 @@ c0101822,n05,rechaza
 c0101823,ninguna,
 c0101824,n01,rechaza
 c0101825,ninguna,
-c0101826,ninguna,
+c0101826,n11,rechaza
 c0101827,n02,apoya
 c0101828,n10,rechaza
 c0101829,n06,apoya
@@ -101916,7 +101916,7 @@ c0101914,n02,rechaza
 c0101915,n04,rechaza
 c0101916,n06,rechaza
 c0101917,ninguna,
-c0101918,n11,apoya
+c0101918,n11,rechaza
 c0101919,n06,apoya
 c0101920,n06,apoya
 c0101921,n04,rechaza
@@ -103392,7 +103392,7 @@ c0103390,n01,apoya
 c0103391,n03,rechaza
 c0103392,n01,apoya
 c0103393,n01,rechaza
-c0103394,n11,apoya
+c0103394,n11,rechaza
 c0103395,n02,apoya
 c0103396,n01,apoya
 c0103397,n05,rechaza
@@ -103971,7 +103971,7 @@ c0103969,n01,apoya
 c0103970,n01,apoya
 c0103971,n06,apoya
 c0103972,n07,apoya
-c0103973,n11,apoya
+c0103973,n11,rechaza
 c0103974,n01,rechaza
 c0103975,n06,apoya
 c0103976,ninguna,
@@ -104776,7 +104776,7 @@ c0104774,n07,apoya
 c0104775,n03,rechaza
 c0104776,n03,rechaza
 c0104777,n03,rechaza
-c0104778,n11,apoya
+c0104778,n11,rechaza
 c0104779,n09,apoya
 c0104780,n07,rechaza
 c0104781,n09,apoya
@@ -108260,7 +108260,7 @@ c0108258,n07,apoya
 c0108259,n05,apoya
 c0108260,n03,rechaza
 c0108261,ninguna,
-c0108262,ninguna,
+c0108262,n11,rechaza
 c0108263,ninguna,
 c0108264,n03,rechaza
 c0108265,ninguna,
@@ -110432,7 +110432,7 @@ c0110430,n07,apoya
 c0110431,n03,apoya
 c0110432,ninguna,
 c0110433,n06,apoya
-c0110434,n02,apoya
+c0110434,n02,rechaza
 c0110435,ninguna,
 c0110436,n09,apoya
 c0110437,ninguna,
@@ -111260,7 +111260,7 @@ c0111258,n04,rechaza
 c0111259,n09,rechaza
 c0111260,n07,rechaza
 c0111261,n12,rechaza
-c0111262,n07,apoya
+c0111262,n07,rechaza
 c0111263,n03,rechaza
 c0111264,n12,apoya
 c0111265,n12,rechaza
@@ -115539,7 +115539,7 @@ c0115537,ninguna,
 c0115538,n01,apoya
 c0115539,n01,apoya
 c0115540,ninguna,
-c0115541,ninguna,
+c0115541,n11,rechaza
 c0115542,n01,apoya
 c0115543,ninguna,
 c0115544,n05,apoya
@@ -115834,7 +115834,7 @@ c0115832,ninguna,
 c0115833,n02,apoya
 c0115834,n01,apoya
 c0115835,n04,apoya
-c0115836,ninguna,
+c0115836,n11,rechaza
 c0115837,n12,apoya
 c0115838,n09,rechaza
 c0115839,ninguna,
@@ -116826,7 +116826,7 @@ c0116824,ninguna,
 c0116825,n07,rechaza
 c0116826,n11,rechaza
 c0116827,n05,apoya
-c0116828,ninguna,
+c0116828,n02,rechaza
 c0116829,n02,rechaza
 c0116830,n01,apoya
 c0116831,ninguna,
@@ -125558,7 +125558,7 @@ c0125556,n06,apoya
 c0125557,n02,rechaza
 c0125558,n01,apoya
 c0125559,n02,rechaza
-c0125560,n02,apoya
+c0125560,n02,rechaza
 c0125561,n11,rechaza
 c0125562,n06,apoya
 c0125563,ninguna,
@@ -126508,14 +126508,14 @@ c0126506,n01,apoya
 c0126507,n01,rechaza
 c0126508,ninguna,
 c0126509,n11,apoya
-c0126510,n11,apoya
+c0126510,n11,rechaza
 c0126511,n01,rechaza
 c0126512,ninguna,
 c0126513,ninguna,
 c0126514,n01,apoya
 c0126515,n04,rechaza
 c0126516,ninguna,
-c0126517,n11,apoya
+c0126517,n11,rechaza
 c0126518,n06,apoya
 c0126519,n06,apoya
 c0126520,n06,rechaza
@@ -129319,7 +129319,7 @@ c0129317,ninguna,
 c0129318,n03,rechaza
 c0129319,n01,apoya
 c0129320,n07,rechaza
-c0129321,ninguna,
+c0129321,n02,rechaza
 c0129322,n07,rechaza
 c0129323,n11,rechaza
 c0129324,n09,rechaza
@@ -130683,7 +130683,7 @@ c0130681,n06,rechaza
 c0130682,n07,apoya
 c0130683,n02,apoya
 c0130684,n11,rechaza
-c0130685,n11,apoya
+c0130685,n11,rechaza
 c0130686,n12,apoya
 c0130687,ninguna,
 c0130688,n12,rechaza
@@ -131809,13 +131809,13 @@ c0131807,n11,apoya
 c0131808,n11,rechaza
 c0131809,n11,apoya
 c0131810,n04,rechaza
-c0131811,ninguna,
+c0131811,n11,apoya
 c0131812,n11,apoya
 c0131813,n11,apoya
 c0131814,ninguna,
 c0131815,n03,apoya
 c0131816,n11,rechaza
-c0131817,ninguna,
+c0131817,n11,apoya
 c0131818,n08,rechaza
 c0131819,n08,apoya
 c0131820,n11,apoya
@@ -131838,7 +131838,7 @@ c0131836,n11,apoya
 c0131837,n08,rechaza
 c0131838,n08,apoya
 c0131839,n11,apoya
-c0131840,ninguna,
+c0131840,n11,apoya
 c0131841,n10,apoya
 c0131842,n08,apoya
 c0131843,n06,apoya
@@ -131964,18 +131964,18 @@ c0131962,n06,apoya
 c0131963,n04,rechaza
 c0131964,n10,rechaza
 c0131965,n01,apoya
-c0131966,ninguna,
+c0131966,n11,apoya
 c0131967,n06,rechaza
-c0131968,ninguna,
+c0131968,n11,apoya
 c0131969,n02,apoya
 c0131970,n11,apoya
 c0131971,n11,apoya
 c0131972,n11,apoya
 c0131973,n11,apoya
 c0131974,n11,apoya
-c0131975,ninguna,
+c0131975,n11,apoya
 c0131976,ninguna,
-c0131977,ninguna,
+c0131977,n11,apoya
 c0131978,n11,apoya
 c0131979,n11,apoya
 c0131980,n11,apoya
@@ -131983,15 +131983,15 @@ c0131981,n11,apoya
 c0131982,n11,apoya
 c0131983,n08,apoya
 c0131984,n11,apoya
-c0131985,ninguna,
+c0131985,n11,apoya
 c0131986,n11,apoya
-c0131987,ninguna,
+c0131987,n11,apoya
 c0131988,ninguna,
 c0131989,n11,apoya
 c0131990,n11,apoya
-c0131991,ninguna,
+c0131991,n11,apoya
 c0131992,n11,apoya
-c0131993,ninguna,
+c0131993,n11,apoya
 c0131994,n11,apoya
 c0131995,n04,apoya
 c0131996,n02,rechaza
@@ -133227,7 +133227,7 @@ c0133225,n01,apoya
 c0133226,n02,apoya
 c0133227,n10,apoya
 c0133228,n06,rechaza
-c0133229,ninguna,
+c0133229,n11,rechaza
 c0133230,n02,rechaza
 c0133231,n02,apoya
 c0133232,n01,rechaza
@@ -134552,7 +134552,7 @@ c0134550,ninguna,
 c0134551,n07,rechaza
 c0134552,ninguna,
 c0134553,n02,rechaza
-c0134554,ninguna,
+c0134554,n11,rechaza
 c0134555,n01,apoya
 c0134556,n02,apoya
 c0134557,n01,rechaza
@@ -136740,7 +136740,7 @@ c0136738,ninguna,
 c0136739,n07,apoya
 c0136740,n07,apoya
 c0136741,n07,apoya
-c0136742,ninguna,
+c0136742,n11,rechaza
 c0136743,ninguna,
 c0136744,n01,apoya
 c0136745,n12,apoya
@@ -138341,7 +138341,7 @@ c0138339,n08,apoya
 c0138340,n10,rechaza
 c0138341,n01,rechaza
 c0138342,ninguna,
-c0138343,ninguna,
+c0138343,n07,rechaza
 c0138344,n03,apoya
 c0138345,ninguna,
 c0138346,n03,apoya
@@ -139991,7 +139991,7 @@ c0139989,ninguna,
 c0139990,n08,apoya
 c0139991,ninguna,
 c0139992,n02,apoya
-c0139993,n02,apoya
+c0139993,n02,rechaza
 c0139994,n09,apoya
 c0139995,ninguna,
 c0139996,n02,apoya
@@ -140261,7 +140261,7 @@ c0140259,n08,apoya
 c0140260,n08,apoya
 c0140261,n06,apoya
 c0140262,ninguna,
-c0140263,n11,apoya
+c0140263,n11,rechaza
 c0140264,n11,rechaza
 c0140265,n02,apoya
 c0140266,n01,apoya
@@ -140674,7 +140674,7 @@ c0140672,n06,rechaza
 c0140673,n10,apoya
 c0140674,n07,apoya
 c0140675,n10,rechaza
-c0140676,n02,rechaza
+c0140676,n04,rechaza
 c0140677,n01,rechaza
 c0140678,n08,apoya
 c0140679,n02,apoya
@@ -144163,7 +144163,7 @@ c0144161,ninguna,
 c0144162,n06,rechaza
 c0144163,ninguna,
 c0144164,ninguna,
-c0144165,n11,apoya
+c0144165,n11,rechaza
 c0144166,n02,apoya
 c0144167,n02,rechaza
 c0144168,n02,rechaza
@@ -145068,7 +145068,7 @@ c0145066,n06,rechaza
 c0145067,n01,apoya
 c0145068,n08,rechaza
 c0145069,n10,apoya
-c0145070,n11,apoya
+c0145070,n11,rechaza
 c0145071,n08,apoya
 c0145072,n11,rechaza
 c0145073,n06,apoya
@@ -145573,7 +145573,7 @@ c0145571,n06,rechaza
 c0145572,n06,rechaza
 c0145573,n02,apoya
 c0145574,n06,apoya
-c0145575,n11,apoya
+c0145575,n11,rechaza
 c0145576,n06,apoya
 c0145577,n01,apoya
 c0145578,n02,apoya
@@ -149863,7 +149863,7 @@ c0149861,n02,rechaza
 c0149862,ninguna,
 c0149863,n11,rechaza
 c0149864,ninguna,
-c0149865,ninguna,
+c0149865,n11,rechaza
 c0149866,ninguna,
 c0149867,n06,apoya
 c0149868,n06,apoya

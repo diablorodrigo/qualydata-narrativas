@@ -53,16 +53,16 @@ Puntaje automático con `evaluacion/puntuar.py` (el mismo script del jurado):
 | Postura macro-F1 | 0,491 | **0,999** |
 | Origen de narrativas emergentes | 0,333 | **1,000** (las 3 a menos de 3 h) |
 | **Narrativas (30)** | 12,68 | **29,92** |
-| Cuentas coordinadas F1 | 0,116 | **0,966** (P 0,94, R 0,99) |
-| Grupos por operación B-cubed F1 | 0,278 | **0,992** |
-| **Coordinación (25)** | 4,12 | **24,34** |
-| **Total automático (55)** | **16,8** | **54,26** |
+| Cuentas coordinadas F1 | 0,116 | **1,000** (P 1,00, R 1,00) |
+| Grupos por operación B-cubed F1 | 0,278 | **1,000** |
+| **Coordinación (25)** | 4,12 | **25,00** |
+| **Total automático (55)** | **16,8** | **54,92** |
 
 Tiempo: 40 a 45 segundos de punta a punta en una máquina Linux de 8 CPU y 16 GB de RAM, sin GPU (ingesta 2 s, coordinación 12 s, narrativas 30 s).
 
 **Reproducible:** las semillas están fijas (mundo nulo con `numpy.random.default_rng(0)`, Louvain con `seed=0`) y todo lo que sale de DuckDB se ordena antes de usarse, porque DuckDB agrega en paralelo y no garantiza el orden de las filas. Corrimos el mismo comando varias veces, con distinta cantidad de CPU y distinto `PYTHONHASHSEED`, y `comentarios.csv`, `narrativas.csv` y `cuentas.csv` salen idénticos byte a byte. Sin las variables `QN_IA_*` no se usa IA y el resultado es determinista.
 
-**Set final:** 150.000 comentarios, 12.002 cuentas y 372 publicaciones procesados en 36 segundos (ingesta 1,5 s, coordinación 10,8 s, narrativas 23,1 s), sin IA ni APIs pagas. Encontró 12 narrativas (unos 30.640 comentarios de ruido), tres de ellas emergentes: la constructora de la obra del dique (9/10), el cierre de la comisaría del barrio Norte (9/10) y las entradas del festival con artistas que no firmaron (12/10). Marcó 3 operaciones coordinadas con 99 cuentas (50 de cuentas creadas días antes que empujan el apoyo al dique, 21 que difunden de madrugada el rumor del cierre de la comisaría y 28 con actividad de cobertura que empujan el beneficio turístico del festival). Una segunda corrida dio los tres CSV idénticos byte a byte.
+**Set final:** 150.000 comentarios, 12.002 cuentas y 372 publicaciones procesados en 31 segundos (ingesta 1,0 s, coordinación 8,6 s, narrativas 20,9 s; entre 26 y 31 s según la corrida), sin IA ni APIs pagas. Encontró 12 narrativas (30.629 comentarios de ruido), tres de ellas emergentes: la constructora de la obra del dique (9/10), el cierre de la comisaría del barrio Norte (9/10) y las entradas del festival con artistas que no firmaron (12/10). Marcó 3 operaciones coordinadas con 99 cuentas: 50 cuentas creadas días antes que empujan el apoyo al dique, 21 que difunden de madrugada el rumor del cierre de la comisaría y 28 cuentas antiguas, con actividad de cobertura, que instalan que el festival es «pan y circo». Una segunda corrida dio los tres CSV idénticos byte a byte.
 
 Para no engañarnos con el set de práctica hicimos tres pruebas extra:
 

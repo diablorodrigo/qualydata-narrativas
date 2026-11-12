@@ -1,10 +1,10 @@
 {
   "comentarios_procesados": 150000,
-  "segundos": 35.6,
+  "segundos": 30.7,
   "tokens_ia": 0,
   "usd_ia": 0.0,
   "usd_por_mil_comentarios": 0.0,
   "hardware": "Linux x86_64, 8 CPU, 16 GB RAM, sin GPU",
   "almacenamiento": "DuckDB local sobre Parquet (zstd)",
-  "notas": "Sin APIs pagas. Embeddings locales (MiniLM multilingüe, ONNX en CPU), grafo de conversación y detección de coordinación contra un mundo nulo barajado. Tiempos por etapa: ingesta 1.5s, coordinacion 10.8s, narrativas 23.1s"
+  "notas": "Sin APIs pagas. Embeddings locales (MiniLM multilingüe, ONNX en CPU), grafo de conversación y detección de coordinación contra un mundo nulo barajado. Tiempos por etapa: ingesta 1.0s, coordinacion 8.6s, narrativas 20.9s"
 }
