@@ -39,9 +39,12 @@ def _puntajes(con, tabla: str) -> pd.DataFrame:
         from _dens x1 join _dens x2 on x1.p = x2.p and x1.a < x2.a and abs(x1.ts - x2.ts) <= {VENTANA_S}
         group by 1, 2, 3""")
     con.execute(f"create or replace temp table _act as select cuenta_id a, count(distinct publicacion_id) np from {tabla} group by 1")
-    return con.execute("""select s.a, s.b, s.n, s.sw / sqrt(n1.np * n2.np) sinc
+    # Orden fijo y redondeo: DuckDB agrega en paralelo y no garantiza el orden de las filas
+    # ni el último bit de las sumas; así el grafo (y Louvain) queda idéntico entre corridas.
+    return con.execute("""select s.a, s.b, s.n, round(s.sw / sqrt(n1.np * n2.np), 10) sinc
         from (select a, b, count(*) n, sum(w) sw from _pares group by 1, 2 having count(*) >= 2) s
-        join _act n1 on n1.a = s.a join _act n2 on n2.a = s.b""").df()
+        join _act n1 on n1.a = s.a join _act n2 on n2.a = s.b
+        order by s.a, s.b""").df()
 
 
 def _grafo(m: pd.DataFrame, q_alto: float, q_bajo: float) -> nx.Graph:
@@ -68,7 +71,7 @@ def _comunidades(G: nx.Graph, semilla: int) -> list:
 def detectar(con, log=print, semilla: int = 0) -> tuple[pd.DataFrame, dict]:
     obs = _puntajes(con, "comentarios")
     # Mundo nulo: barajar cuentas dentro de cada publicación
-    base = con.execute("select publicacion_id, cuenta_id, ts from comentarios order by publicacion_id").df()
+    base = con.execute("select publicacion_id, cuenta_id, ts from comentarios order by publicacion_id, comentario_id").df()
     rng = np.random.default_rng(semilla)
     orden = np.lexsort((rng.random(len(base)), base["publicacion_id"].to_numpy()))
     nulo = base[["publicacion_id", "ts"]].copy()
@@ -82,7 +85,7 @@ def detectar(con, log=print, semilla: int = 0) -> tuple[pd.DataFrame, dict]:
 
     resp = con.execute("""select least(c1.cuenta_id, c2.cuenta_id) a, greatest(c1.cuenta_id, c2.cuenta_id) b, count(*) nr
         from comentarios c1 join comentarios c2 on c1.respuesta_a = c2.comentario_id
-        where c1.cuenta_id <> c2.cuenta_id group by all""").df()
+        where c1.cuenta_id <> c2.cuenta_id group by all order by a, b""").df()
     m = obs.merge(resp, on=["a", "b"], how="left").fillna({"nr": 0})
     G = _grafo(m, q_alto, q_bajo)
     # Tamaño de grupo que aparece por azar: mismo procedimiento sobre el mundo nulo.
@@ -140,7 +143,7 @@ def refinar_con_narrativas(cuentas: pd.DataFrame, com: pd.DataFrame, info_c: dic
         if len(sub_seed) < 15:
             op_meta.append({"et": et, "nar": None, "pos": None, "windows": {}, "accounts": seed_set, "densidad": g_info["densidad"]})
             continue
-        top_np = sub_seed.groupby(["narrativa", "postura"]).size().sort_values(ascending=False)
+        top_np = sub_seed.groupby(["narrativa", "postura"]).size().sort_values(ascending=False, kind="stable")
         (nar, pos), cnt_top = top_np.index[0], int(top_np.iloc[0])
         if cnt_top < 15 or cnt_top / len(sub_seed) < 0.25:
             op_meta.append({"et": et, "nar": None, "pos": None, "windows": {}, "accounts": seed_set, "densidad": g_info["densidad"]})

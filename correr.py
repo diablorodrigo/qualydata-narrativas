@@ -51,7 +51,7 @@ def main():
 
     print("3/4 Narrativas")
     t = time.time()
-    df = con.execute("select comentario_id, publicacion_id, cuenta_id, ts, texto, respuesta_a, me_gusta from comentarios").df()
+    df = con.execute("select comentario_id, publicacion_id, cuenta_id, ts, texto, respuesta_a, me_gusta from comentarios order by comentario_id").df()
     com, narr, info_n = narrativas.detectar(df, RAIZ / ".cache" / "fastembed", RAIZ / "modelos" / "postura.joblib",
                                             cuentas_coord=coord, hilos=a.hilos)
     tiempos["narrativas"] = round(time.time() - t, 1)

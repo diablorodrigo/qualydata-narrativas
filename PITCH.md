@@ -19,8 +19,8 @@
 - Mostrar un caso: una narrativa emergente que nace en una ráfaga nocturna de cuentas creadas días antes.
 
 ## 4. Resultados (30 s)
-- En el set de práctica: **54,9 de 55 puntos automáticos**, contra 16,8 de la línea base.
-- Narrativas 29,9 de 30 y coordinación **25,0 de 25** (100% precisión y recall en las 3 operaciones, incluida la de actividad de cobertura).
+- En el set de práctica: **54,3 de 55 puntos automáticos**, contra 16,8 de la línea base.
+- Narrativas 29,9 de 30 y coordinación **24,3 de 25** (recall 99%, incluida la operación con actividad de cobertura).
 - Lo probamos con temas que no vio (51,6), sin el clasificador entrenado (51,6) y con datos sucios (53,6).
 - Set final: [completar el viernes con tiempo de corrida y lo que encontró].
 

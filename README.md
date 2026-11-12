@@ -49,16 +49,18 @@ Puntaje automático con `evaluacion/puntuar.py` (el mismo script del jurado):
 | Componente | Línea base del repo | Este pipeline |
 |---|---|---|
 | Agrupamiento B-cubed F1 | 0,349 | **0,999** |
-| Detección de ruido F1 | 0,665 | **0,988** |
+| Detección de ruido F1 | 0,665 | **0,987** |
 | Postura macro-F1 | 0,491 | **0,999** |
 | Origen de narrativas emergentes | 0,333 | **1,000** (las 3 a menos de 3 h) |
 | **Narrativas (30)** | 12,68 | **29,92** |
-| Cuentas coordinadas F1 | 0,116 | **1,000** (P 1,00, R 1,00) |
-| Grupos por operación B-cubed F1 | 0,278 | **1,000** |
-| **Coordinación (25)** | 4,12 | **25,00** |
-| **Total automático (55)** | **16,8** | **54,92** |
+| Cuentas coordinadas F1 | 0,116 | **0,966** (P 0,94, R 0,99) |
+| Grupos por operación B-cubed F1 | 0,278 | **0,992** |
+| **Coordinación (25)** | 4,12 | **24,34** |
+| **Total automático (55)** | **16,8** | **54,26** |
 
-Tiempo: 35 a 42 segundos de punta a punta en una máquina Linux de 8 CPU y 16 GB de RAM, sin GPU (ingesta 1 s, coordinación 9 s, narrativas 25 s).
+Tiempo: 40 a 45 segundos de punta a punta en una máquina Linux de 8 CPU y 16 GB de RAM, sin GPU (ingesta 2 s, coordinación 12 s, narrativas 30 s).
+
+**Reproducible:** las semillas están fijas (mundo nulo con `numpy.random.default_rng(0)`, Louvain con `seed=0`) y todo lo que sale de DuckDB se ordena antes de usarse, porque DuckDB agrega en paralelo y no garantiza el orden de las filas. Corrimos el mismo comando varias veces, con distinta cantidad de CPU y distinto `PYTHONHASHSEED`, y `comentarios.csv`, `narrativas.csv` y `cuentas.csv` salen idénticos byte a byte. Sin las variables `QN_IA_*` no se usa IA y el resultado es determinista.
 
 Para no engañarnos con el set de práctica hicimos tres pruebas extra:
 

@@ -104,7 +104,7 @@ def _frases_clave(nucleos_por_grupo: dict, k: int = 6) -> dict:
         tot = sum(cnt.values()) or 1
         sc = {x: (c / tot) * math.log(1 + G / df[x]) * (1.3 if " " in x else 1.0) for x, c in cnt.items()}
         elegidos = []
-        for x, _ in sorted(sc.items(), key=lambda z: -z[1]):
+        for x, _ in sorted(sc.items(), key=lambda z: (-z[1], z[0])):
             if any(x in e or e in x for e in elegidos):
                 continue
             elegidos.append(x)

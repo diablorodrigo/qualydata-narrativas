@@ -92,7 +92,7 @@ def generar(con, destino: Path, info_c: dict, info_n: dict):
     t0 = int(rango.t0)
     dias = int((rango.t1 - t0) // 86400) + 1
     horas_tot = int((rango.t1 - t0) // 3600) + 1
-    nar = e("select * from narrativas")
+    nar = e("select * from narrativas order by narrativa")
     vol = e(f"""select e.narrativa, cast((c.ts - {t0}) / 21600 as int) b, count(*) n
                from comentarios c join etiquetas e using (comentario_id) where e.narrativa <> 'ninguna' group by all""")
     coord = e("""select e.narrativa, g.grupo, e.postura, count(*) n from comentarios c join etiquetas e using (comentario_id)
@@ -115,7 +115,7 @@ def generar(con, destino: Path, info_c: dict, info_n: dict):
         empuje = ""
         tiene_coord = False
         if len(cc):
-            g = cc.groupby("grupo").n.sum().sort_values(ascending=False)
+            g = cc.groupby("grupo").n.sum().sort_values(ascending=False, kind="stable")
             tot_g = coord.groupby("grupo").n.sum()
             tags = [
                 f'<a href="#op-{html.escape(k)}" class="tag" onclick="resaltar(\'op-{html.escape(k)}\')">🎯 {html.escape(k)} · {v} com.</a>'
@@ -125,8 +125,8 @@ def generar(con, destino: Path, info_c: dict, info_n: dict):
                 tiene_coord = True
                 n_impulsadas += 1
                 empuje = " ".join(tags)
-        ej_ap = e(f"select c.texto, count(*) n from comentarios c join etiquetas e using (comentario_id) where e.narrativa = '{r.narrativa}' and e.postura = 'apoya' and c.respuesta_a is null group by 1 order by 2 desc limit 2")
-        ej_re = e(f"select c.texto, count(*) n from comentarios c join etiquetas e using (comentario_id) where e.narrativa = '{r.narrativa}' and e.postura = 'rechaza' group by 1 order by 2 desc limit 2")
+        ej_ap = e(f"select c.texto, count(*) n from comentarios c join etiquetas e using (comentario_id) where e.narrativa = '{r.narrativa}' and e.postura = 'apoya' and c.respuesta_a is null group by 1 order by 2 desc, 1 limit 2")
+        ej_re = e(f"select c.texto, count(*) n from comentarios c join etiquetas e using (comentario_id) where e.narrativa = '{r.narrativa}' and e.postura = 'rechaza' group by 1 order by 2 desc, 1 limit 2")
         det_html = ""
         if len(ej_ap) or len(ej_re):
             ap_str = "<br>".join(f'🟢 <b>Apoya:</b> «{html.escape(str(x)[:110])}» <span class="kw">({int(n)})</span>' for x, n in ej_ap.itertuples(index=False))
@@ -154,14 +154,14 @@ def generar(con, destino: Path, info_c: dict, info_n: dict):
     gfilas = []
     for _, g in grp.iterrows():
         cm = e(f"""select c.texto, c.ts, c.publicacion_id, e.narrativa, e.postura from comentarios c join grupos g using (cuenta_id)
-                   join etiquetas e using (comentario_id) where g.grupo = '{g.grupo}'""")
+                   join etiquetas e using (comentario_id) where g.grupo = '{g.grupo}' order by c.comentario_id""")
         h = [0] * 24
         for hh in pd.to_datetime(cm.ts, unit="s", utc=True).dt.tz_convert("-03:00").dt.hour:
             h[hh] += 1
         nn = cm[cm.narrativa != "ninguna"]
         principal = ""
         if len(nn):
-            top = nn.groupby(["narrativa", "postura"]).size().sort_values(ascending=False)
+            top = nn.groupby(["narrativa", "postura"]).size().sort_values(ascending=False, kind="stable")
             (na, po), k = top.index[0], top.iloc[0]
             tit = nar.set_index("narrativa").titulo.get(na, "")
             rasgos = []
@@ -177,7 +177,7 @@ def generar(con, destino: Path, info_c: dict, info_n: dict):
             principal = (f'<a href="#nar-{na}" onclick="resaltar(\'nar-{na}\')" style="color:#1e40af;text-decoration:none">'
                          f'<b>{na}</b> ({po}, {100 * k / len(nn):.0f}%)</a><br>'
                          f'<small>{html.escape(str(tit))}</small><br>{badges}')
-        ej = cm.texto.value_counts().head(3).index.tolist()
+        ej = cm.groupby("texto").size().sort_values(ascending=False, kind="stable").head(3).index.tolist()
         gfilas.append(
             f'<tr id="op-{g.grupo}"><td><span class="tag" style="font-weight:700;font-size:13px">{g.grupo}</span></td>'
             f'<td style="text-align:right;font-weight:700">{int(g.cuentas)}</td>'
