@@ -13,7 +13,15 @@
    (operaciones que se responden entre sí).
 4. Comunidades (Louvain) sobre ese grafo = operaciones. Se valida cada grupo:
    tamaño mínimo y densidad interna.
+5. Refinamiento por narrativa y ráfagas: una vez detectadas las narrativas y
+   posturas, se consolidan las ventanas de ataque de cada operación sobre su
+   (narrativa, postura) dominante para rescatar cuentas con actividad de
+   cobertura y podar falsos positivos virales.
 """
+from __future__ import annotations
+
+from collections import Counter, defaultdict
+
 import networkx as nx
 import numpy as np
 import pandas as pd
@@ -101,3 +109,130 @@ def detectar(con, log=print, semilla: int = 0) -> tuple[pd.DataFrame, dict]:
     log(f"  pares con co-ocurrencia: {len(obs):,}; umbral (p99.95 del mundo nulo) {q_alto:.4f}; "
         f"grupo máximo por azar {tam_azar}; {len(detalle)} operaciones, {len(grupos)} cuentas marcadas")
     return cuentas, info
+
+
+def refinar_con_narrativas(cuentas: pd.DataFrame, com: pd.DataFrame, info_c: dict, log=print) -> tuple[pd.DataFrame, dict]:
+    """Consolida cada operación coordinada usando las ráfagas de su (narrativa, postura)
+    dominante. Rescata cuentas con actividad de cobertura (que comentan dentro de las
+    ráfagas de la operación pero tienen muchos comentarios de cobertura en otros temas)
+    y filtra cuentas genuinas arrastradas por posteos virales."""
+    if not info_c.get("grupos"):
+        return cuentas, info_c
+
+    por_id_acc = dict(zip(com["comentario_id"], com["cuenta_id"]))
+    por_id_nar = dict(zip(com["comentario_id"], com["narrativa"]))
+
+    # Pre-indexar respuestas entre cuentas por narrativa
+    resp_rows = com.loc[com["respuesta_a"].notna(), ["cuenta_id", "respuesta_a", "narrativa"]]
+    resp_pares = []
+    for a, pa, nar_a in resp_rows.itertuples(index=False):
+        b = por_id_acc.get(pa)
+        if b and a != b:
+            resp_pares.append((a, b, nar_a, por_id_nar.get(pa, "ninguna")))
+
+    validos = com[com["narrativa"] != "ninguna"][["publicacion_id", "cuenta_id", "ts", "narrativa", "postura"]]
+
+    op_meta = []
+    for g_info in info_c["grupos"]:
+        et = g_info["grupo"]
+        seed_set = set(cuentas.loc[cuentas["grupo"] == et, "cuenta_id"])
+        sub_seed = validos[validos["cuenta_id"].isin(seed_set)]
+        if len(sub_seed) < 15:
+            op_meta.append({"et": et, "nar": None, "pos": None, "windows": {}, "accounts": seed_set, "densidad": g_info["densidad"]})
+            continue
+        top_np = sub_seed.groupby(["narrativa", "postura"]).size().sort_values(ascending=False)
+        (nar, pos), cnt_top = top_np.index[0], int(top_np.iloc[0])
+        if cnt_top < 15 or cnt_top / len(sub_seed) < 0.25:
+            op_meta.append({"et": et, "nar": None, "pos": None, "windows": {}, "accounts": seed_set, "densidad": g_info["densidad"]})
+            continue
+
+        # Ventanas de ataque de la operación sobre (nar, pos)
+        seed_np = sub_seed[(sub_seed["narrativa"] == nar) & (sub_seed["postura"] == pos)]
+        windows = {}
+        for pid, grp in seed_np.groupby("publicacion_id"):
+            tss = np.sort(grp["ts"].to_numpy(dtype=np.int64))
+            if len(tss) >= 2:
+                med = tss[len(tss) // 2]
+                in_w = tss[np.abs(tss - med) <= 1200]
+                if len(in_w) >= 2:
+                    windows[pid] = (int(in_w[0]) - 300, int(in_w[-1]) + 300)
+
+        if len(windows) < 4:
+            op_meta.append({"et": et, "nar": nar, "pos": pos, "windows": windows, "accounts": seed_set, "densidad": g_info["densidad"]})
+            continue
+
+        op_meta.append({"et": et, "nar": nar, "pos": pos, "windows": windows, "accounts": seed_set, "densidad": g_info["densidad"]})
+
+    # Si Louvain partió una misma campaña en dos subgrupos con igual (nar, pos) y ventanas superpuestas, unirlos
+    merged = []
+    used = set()
+    for i, m1 in enumerate(op_meta):
+        if i in used:
+            continue
+        acc_u = set(m1["accounts"])
+        win_u = dict(m1["windows"])
+        for j in range(i + 1, len(op_meta)):
+            if j in used:
+                continue
+            m2 = op_meta[j]
+            if m1["nar"] and m1["nar"] == m2["nar"] and m1["pos"] == m2["pos"] and win_u and m2["windows"]:
+                inter = set(win_u) & set(m2["windows"])
+                if len(inter) / max(1, min(len(win_u), len(m2["windows"]))) >= 0.5:
+                    acc_u |= m2["accounts"]
+                    for pid, (w0, w1) in m2["windows"].items():
+                        if pid in win_u:
+                            win_u[pid] = (min(win_u[pid][0], w0), max(win_u[pid][1], w1))
+                        else:
+                            win_u[pid] = (w0, w1)
+                    used.add(j)
+        m1_copy = dict(m1)
+        m1_copy["accounts"] = acc_u
+        m1_copy["windows"] = win_u
+        merged.append(m1_copy)
+
+    # Expandir cuentas con cobertura y podar falsos positivos por operación
+    nuevos_grupos = {}
+    nuevo_detalle = []
+    for idx_g, m in enumerate(merged, start=1):
+        et = f"g{idx_g:02d}"
+        seed_set = m["accounts"]
+        nar, pos, windows = m["nar"], m["pos"], m["windows"]
+        if not nar or len(windows) < 4:
+            final_set = seed_set - set(nuevos_grupos)
+        else:
+            sub_np = validos[(validos["narrativa"] == nar) & (validos["postura"] == pos)]
+            tot_np = Counter(sub_np["cuenta_id"])
+            hits = Counter()
+            for pid, grp in sub_np.groupby("publicacion_id"):
+                if pid not in windows:
+                    continue
+                w0, w1 = windows[pid]
+                en_ventana = grp.loc[(grp["ts"] >= w0) & (grp["ts"] <= w1), "cuenta_id"].unique()
+                for aid in en_ventana:
+                    hits[aid] += 1
+
+            rep_g = Counter()
+            for a, b, nar_a, nar_b in resp_pares:
+                if b in seed_set and nar_a == nar:
+                    rep_g[a] += 1
+                if a in seed_set and nar_b == nar:
+                    rep_g[b] += 1
+
+            kept_seed = {a for a in seed_set if hits[a] >= 2 or rep_g[a] >= 2}
+            rescued = {
+                a for a, h in hits.items()
+                if h >= 3 and (h / max(1, tot_np[a])) >= 0.6
+                and (h >= 4 or rep_g[a] >= 1 or (h / max(1, tot_np[a])) >= 0.75)
+            }
+            final_set = (kept_seed | rescued) - set(nuevos_grupos)
+
+        for a in final_set:
+            nuevos_grupos[a] = et
+        nuevo_detalle.append({"grupo": et, "cuentas": len(final_set), "densidad": m["densidad"]})
+
+    cuentas = cuentas.copy()
+    cuentas["grupo"] = cuentas["cuenta_id"].map(nuevos_grupos).fillna("")
+    info_c = dict(info_c)
+    info_c["grupos"] = nuevo_detalle
+    log(f"  refinamiento con narrativas: {len(nuevo_detalle)} operaciones, {len(nuevos_grupos)} cuentas marcadas")
+    return cuentas, info_c

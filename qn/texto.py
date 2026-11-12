@@ -5,6 +5,8 @@ misma idea. En vez de una lista fija, las aprendemos del propio set: un prefijo 
 sufijo es muletilla si al sacarlo queda un texto que también aparece solo,
 para muchos textos distintos. Así funciona con cualquier tema.
 """
+from __future__ import annotations
+
 import re
 import unicodedata
 from collections import defaultdict

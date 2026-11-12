@@ -2,6 +2,8 @@
 
 Responde en un minuto: qué narrativas circulan, desde cuándo y quién las empuja.
 """
+from __future__ import annotations
+
 import html
 import json
 from pathlib import Path
@@ -70,8 +72,15 @@ def generar(con, destino: Path, info_c: dict, info_n: dict):
             tot_g = coord.groupby("grupo").n.sum()
             empuje = " ".join(f'<span class="tag">{html.escape(k)} · {v} com.</span>' for k, v in g.items()
                               if v >= 10 and v >= 0.15 * tot_g[k])
+        ej_ap = e(f"select c.texto from comentarios c join etiquetas e using (comentario_id) where e.narrativa = '{r.narrativa}' and e.postura = 'apoya' and c.respuesta_a is null group by 1 order by count(*) desc limit 2").texto.tolist()
+        ej_re = e(f"select c.texto from comentarios c join etiquetas e using (comentario_id) where e.narrativa = '{r.narrativa}' and e.postura = 'rechaza' group by 1 order by count(*) desc limit 2").texto.tolist()
+        det_html = ""
+        if ej_ap or ej_re:
+            ap_str = "<br>".join(f'🟢 «{html.escape(x[:110])}»' for x in ej_ap)
+            re_str = "<br>".join(f'🔴 «{html.escape(x[:110])}»' for x in ej_re)
+            det_html = f'<details style="margin-top:4px"><summary style="cursor:pointer;font-size:12px;color:#2563eb">Ejemplos apoya vs. rechaza</summary><small style="display:block;margin-top:4px;color:#334155">{ap_str}<br>{re_str}</small></details>'
         filas.append(f"""<tr><td><b>{r.narrativa}</b></td><td><div class="tit">{html.escape(str(r.titulo))}</div>
-            <small class="kw">{html.escape(str(r.frases_clave)).replace('|', ' · ')}</small></td>
+            <small class="kw">{html.escape(str(r.frases_clave)).replace('|', ' · ')}</small>{det_html}</td>
             <td>{t_or.strftime('%d/%m %H:%M')}{' <span class="new">emergente</span>' if emergente else ''}</td>
             <td>{_spark(serie, color=COLORES[i % len(COLORES)], marca=b_or)}</td>
             <td style="text-align:right">{int(r.comentarios):,}</td><td>{_barra(int(r.apoya), int(r.rechaza))}</td><td>{empuje}</td></tr>""")
@@ -93,7 +102,17 @@ def generar(con, destino: Path, info_c: dict, info_n: dict):
             top = nn.groupby(["narrativa", "postura"]).size().sort_values(ascending=False)
             (na, po), k = top.index[0], top.iloc[0]
             tit = nar.set_index("narrativa").titulo.get(na, "")
-            principal = f"<b>{na}</b> ({po}, {100 * k / len(nn):.0f}%)<br><small>{html.escape(str(tit))}</small>"
+            rasgos = []
+            if not pd.isna(g.antig_dias):
+                rasgos.append("Cuentas nuevas" if g.antig_dias <= 15 else ("Cuentas antiguas + cobertura" if k / len(nn) < 0.75 else "Cuentas antiguas"))
+            if sum(h[0:6]) / max(1, len(cm)) >= 0.5:
+                rasgos.append("Ráfaga nocturna")
+            if cm.texto.value_counts().head(5).sum() / max(1, len(cm)) >= 0.35:
+                rasgos.append("Plantilla repetida")
+            else:
+                rasgos.append("Textos variados / respuestas")
+            badges = " ".join(f'<span class="tag">{r_txt}</span>' for r_txt in rasgos)
+            principal = f"<b>{na}</b> ({po}, {100 * k / len(nn):.0f}%)<br><small>{html.escape(str(tit))}</small><br>{badges}"
         ej = cm.texto.value_counts().head(3).index.tolist()
         gfilas.append(f"""<tr><td><b>{g.grupo}</b></td><td style="text-align:right">{int(g.cuentas)}</td>
             <td style="text-align:right">{len(cm)}</td><td style="text-align:right">{cm.publicacion_id.nunique()}</td>

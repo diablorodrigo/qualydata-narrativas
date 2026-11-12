@@ -4,6 +4,8 @@ Tolera: archivos .csv o .csv.gz, encoding UTF-8 o Latin-1, filas rotas,
 fechas inválidas o vacías, ids duplicados, textos nulos y respuestas a
 comentarios inexistentes.
 """
+from __future__ import annotations
+
 from pathlib import Path
 
 import duckdb

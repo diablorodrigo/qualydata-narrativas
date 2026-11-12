@@ -7,6 +7,8 @@ Se activa solo si están definidas las variables de entorno:
 Para cada narrativa le mostramos 6 frases de cada lado y le pedimos: qué lado
 afirma la narrativa y un título corto. Si algo falla, el pipeline sigue sin IA.
 """
+from __future__ import annotations
+
 import json
 import os
 import urllib.request

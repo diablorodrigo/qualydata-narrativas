@@ -7,6 +7,9 @@ Idea central: dos señales complementarias.
    narrativa con la postura opuesta. Eso arma un grafo de núcleos donde las
    comunidades son narrativas y la bipartición de cada comunidad es la postura.
 """
+from __future__ import annotations
+
+import json
 import math
 import re
 from collections import Counter, defaultdict
@@ -113,22 +116,43 @@ def _frases_clave(nucleos_por_grupo: dict, k: int = 6) -> dict:
 
 class ModeloPostura:
     """Clasificador liviano apoya/rechaza (TF-IDF + regresión logística), entrenado
-    con la verdad del set de práctica. Solo se usa como un voto más para decidir
-    qué lado de cada narrativa es el que la afirma."""
+    con la verdad del set de práctica, con respaldo portable en JSON (log-odds de
+    n-gramas) por si difiere la versión de scikit-learn del entorno."""
 
     def __init__(self, ruta: Path):
         self.ok = False
+        self.weights: dict[str, float] = {}
         try:
             import joblib
             self.vec, self.clf = joblib.load(ruta)
             self.ok = True
         except Exception:
             pass
+        json_path = ruta.with_suffix(".json")
+        if json_path.exists():
+            try:
+                data = json.loads(json_path.read_text(encoding="utf-8"))
+                self.weights = data.get("weights", {})
+            except Exception:
+                pass
 
     def p_rechaza(self, textos: list[str]) -> np.ndarray:
-        if not self.ok or not textos:
-            return np.full(len(textos), 0.5)
-        return self.clf.predict_proba(self.vec.transform([tx.sin_acentos(t) for t in textos]))[:, 1]
+        if not textos:
+            return np.full(0, 0.5)
+        if self.ok:
+            try:
+                return self.clf.predict_proba(self.vec.transform([tx.sin_acentos(t) for t in textos]))[:, 1]
+            except Exception:
+                pass
+        if self.weights:
+            out = np.empty(len(textos), dtype=np.float64)
+            for i, t in enumerate(textos):
+                w = [x for x in tx.sin_acentos(t).split() if len(x) >= 2]
+                grams = set(w) | {f"{a} {b}" for a, b in zip(w, w[1:])}
+                s = sum(self.weights.get(g, 0.0) for g in grams)
+                out[i] = 1.0 / (1.0 + math.exp(-max(-20.0, min(20.0, s))))
+            return out
+        return np.full(len(textos), 0.5)
 
 
 def detectar(df: pd.DataFrame, cache: Path, modelo_postura: Path, cuentas_coord: set | None = None,
@@ -214,8 +238,9 @@ def detectar(df: pd.DataFrame, cache: Path, modelo_postura: Path, cuentas_coord:
         nuevo_ruido = 0
         for k, (j, sim) in zip(resto, sims):
             n_k = int(st.loc[k, "n"])
-            # Ruido: núcleos frecuentes que nunca entran en una discusión (muy improbable para una narrativa).
-            if k not in enganche and (1 - rho) ** n_k < 0.01:
+            # Ruido: núcleos frecuentes que nunca entran en una discusión (muy improbable para una narrativa),
+            # salvo que tengan altísima similitud semántica (>= 0.88) con un núcleo narrativo confirmado.
+            if k not in enganche and (1 - rho) ** n_k < 0.01 and sim < 0.88:
                 nuevo_ruido += 1
                 continue
             if sim >= UMBRAL:

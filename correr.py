@@ -56,6 +56,11 @@ def main():
                                             cuentas_coord=coord, hilos=a.hilos)
     tiempos["narrativas"] = round(time.time() - t, 1)
 
+    t_ref = time.time()
+    cuentas, info_c = coordinacion.refinar_con_narrativas(cuentas, com, info_c)
+    tiempos["coordinacion"] = round(tiempos["coordinacion"] + (time.time() - t_ref), 1)
+    coord = set(cuentas.loc[cuentas["grupo"] != "", "cuenta_id"])
+
     print("4/4 Escritura")
     com[["comentario_id", "narrativa", "postura"]].sort_values("comentario_id").to_csv(a.salida / "comentarios.csv", index=False)
     narr[["narrativa", "titulo", "frases_clave", "fecha_origen"]].to_csv(a.salida / "narrativas.csv", index=False)

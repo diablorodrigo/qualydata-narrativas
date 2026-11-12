@@ -53,10 +53,10 @@ Puntaje automático con `evaluacion/puntuar.py` (el mismo script del jurado):
 | Postura macro-F1 | 0,491 | **0,999** |
 | Origen de narrativas emergentes | 0,333 | **1,000** (las 3 a menos de 3 h) |
 | **Narrativas (30)** | 12,68 | **29,92** |
-| Cuentas coordinadas F1 | 0,116 | **0,955** (P 0,98, R 0,93) |
-| Grupos por operación B-cubed F1 | 0,278 | **0,937** |
-| **Coordinación (25)** | 4,12 | **23,75** |
-| **Total automático (55)** | **16,8** | **53,67** |
+| Cuentas coordinadas F1 | 0,116 | **1,000** (P 1,00, R 1,00) |
+| Grupos por operación B-cubed F1 | 0,278 | **1,000** |
+| **Coordinación (25)** | 4,12 | **25,00** |
+| **Total automático (55)** | **16,8** | **54,92** |
 
 Tiempo: 35 a 42 segundos de punta a punta en una máquina Linux de 8 CPU y 16 GB de RAM, sin GPU (ingesta 1 s, coordinación 9 s, narrativas 25 s).
 
@@ -95,6 +95,7 @@ La gente dice lo mismo con muletillas distintas: «che,», «la verdad que», «
 - **Contra lo esperable:** generamos un **mundo nulo** barajando las cuentas dentro de cada publicación, con los mismos horarios y la misma actividad pero sin coordinación. El umbral es el percentil 99,95 de ese mundo nulo, así que se adapta solo a cada set.
 - **Respuestas entre sí:** si dos cuentas se responden y además coinciden en horario, el vínculo se refuerza. Así aparecen las operaciones con textos variados que se responden entre ellas.
 - **Operaciones:** comunidades Louvain sobre ese grafo, con densidad mínima. El tamaño mínimo de grupo también sale del mundo nulo: corremos lo mismo sobre los datos barajados y descartamos todo grupo que no supere al más grande que aparece por azar.
+- **Refinamiento por narrativa y ráfagas (contra actividad de cobertura):** cuando una operación usa cuentas antiguas con muchos comentarios de cobertura en otros temas (como `C2`), su denominador global de actividad se infla. Una vez etiquetadas las narrativas, consolidamos las ventanas de ataque de cada operación sobre su `(narrativa, postura)` dominante para rescatar las cuentas con cobertura que participan reiteradamente en esas ráfagas y podar falsos positivos de posteos virales.
 
 ## Dónde guardamos los datos y por qué DuckDB
 
@@ -138,6 +139,7 @@ qn/coordinacion.py     sincronía, mundo nulo y grupos coordinados
 qn/tablero.py          tablero HTML estático para la demo
 qn/ia.py               IA opcional, una consulta por narrativa
 modelos/postura.joblib clasificador auxiliar (TF-IDF + regresión logística, 120 KB)
+modelos/postura.json   respaldo portable en JSON (log-odds de n-gramas, independiente de versión)
 entrega/               resultado del set final (se commitea el viernes)
 PITCH.md               guion del pitch
 ```
