@@ -170,7 +170,7 @@ def detectar(df: pd.DataFrame, cache: Path, modelo_postura: Path, cuentas_coord:
     st = df.groupby("core").agg(n=("core", "size"), nresp=("respuesta_a", lambda x: x.notna().sum()))
     st["palabras"] = [len(k.split()) for k in st.index]
     st["rr"] = st["nresp"] / st["n"]
-    acuerdo = set(st.index[(st.palabras <= 5) & (st.rr >= 0.3) & (st.nresp >= 3)])
+    acuerdo = set(st.index[(st.palabras <= 5) & (st.rr >= 0.85) & (st.nresp >= 3)])
     vacio = {""} | set(st.index[st.palabras == 0])
     log(f"  respuestas cortas de acompañamiento detectadas: {len(acuerdo)} núcleos")
 
@@ -235,15 +235,17 @@ def detectar(df: pd.DataFrame, cache: Path, modelo_postura: Path, cuentas_coord:
             j = M.argmax(1)
             sims.extend(zip(j, M[np.arange(len(j)), j]))
         UMBRAL = 0.80
+        coord_por_core = df.loc[df["cuenta_id"].isin(cuentas_coord or set()), "core"].value_counts() if cuentas_coord else Counter()
         nuevo_ruido = 0
         for k, (j, sim) in zip(resto, sims):
             n_k = int(st.loc[k, "n"])
+            es_coord = coord_por_core.get(k, 0) >= 3 and (coord_por_core.get(k, 0) / n_k) >= 0.25
             # Ruido: núcleos frecuentes que nunca entran en una discusión (muy improbable para una narrativa),
-            # salvo que tengan altísima similitud semántica (>= 0.88) con un núcleo narrativo confirmado.
-            if k not in enganche and (1 - rho) ** n_k < 0.01 and sim < 0.88:
+            # salvo que tengan altísima similitud semántica (>= 0.88) o provengan de cuentas coordinadas.
+            if k not in enganche and not es_coord and (1 - rho) ** n_k < 0.01 and sim < 0.88:
                 nuevo_ruido += 1
                 continue
-            if sim >= UMBRAL:
+            if sim >= (0.70 if es_coord else UMBRAL):
                 vec = asignados[j]
                 narr_de[k] = narr_de[vec]
                 lado_de[k] = lado_de[vec]

@@ -114,16 +114,39 @@ def detectar(con, log=print, semilla: int = 0) -> tuple[pd.DataFrame, dict]:
     return cuentas, info
 
 
+def _rafagas(tss: np.ndarray) -> list[tuple[int, int]]:
+    """Agrupa timestamps ordenados de una publicación en ráfagas separadas por > 1800 s."""
+    if len(tss) < 2:
+        return []
+    out = []
+    ini = prev = int(tss[0])
+    cnt = 1
+    for t in tss[1:]:
+        ti = int(t)
+        if ti - prev <= 1800:
+            prev = ti
+            cnt += 1
+        else:
+            if cnt >= 2:
+                out.append((ini - 300, prev + 300))
+            ini = prev = ti
+            cnt = 1
+    if cnt >= 2:
+        out.append((ini - 300, prev + 300))
+    return out
+
+
 def refinar_con_narrativas(cuentas: pd.DataFrame, com: pd.DataFrame, info_c: dict, log=print) -> tuple[pd.DataFrame, dict]:
     """Consolida cada operación coordinada usando las ráfagas de su (narrativa, postura)
     dominante. Rescata cuentas con actividad de cobertura (que comentan dentro de las
     ráfagas de la operación pero tienen muchos comentarios de cobertura en otros temas)
-    y filtra cuentas genuinas arrastradas por posteos virales."""
+    y descarta grupos falsos positivos que no empujan ninguna narrativa."""
     if not info_c.get("grupos"):
         return cuentas, info_c
 
     por_id_acc = dict(zip(com["comentario_id"], com["cuenta_id"]))
     por_id_nar = dict(zip(com["comentario_id"], com["narrativa"]))
+    acc_total_coms = Counter(com["cuenta_id"])
 
     # Pre-indexar respuestas entre cuentas por narrativa
     resp_rows = com.loc[com["respuesta_a"].notna(), ["cuenta_id", "respuesta_a", "narrativa"]]
@@ -141,29 +164,20 @@ def refinar_con_narrativas(cuentas: pd.DataFrame, com: pd.DataFrame, info_c: dic
         seed_set = set(cuentas.loc[cuentas["grupo"] == et, "cuenta_id"])
         sub_seed = validos[validos["cuenta_id"].isin(seed_set)]
         if len(sub_seed) < 15:
-            op_meta.append({"et": et, "nar": None, "pos": None, "windows": {}, "accounts": seed_set, "densidad": g_info["densidad"]})
             continue
         top_np = sub_seed.groupby(["narrativa", "postura"]).size().sort_values(ascending=False, kind="stable")
         (nar, pos), cnt_top = top_np.index[0], int(top_np.iloc[0])
         if cnt_top < 15 or cnt_top / len(sub_seed) < 0.25:
-            op_meta.append({"et": et, "nar": None, "pos": None, "windows": {}, "accounts": seed_set, "densidad": g_info["densidad"]})
             continue
 
-        # Ventanas de ataque de la operación sobre (nar, pos)
         seed_np = sub_seed[(sub_seed["narrativa"] == nar) & (sub_seed["postura"] == pos)]
         windows = {}
         for pid, grp in seed_np.groupby("publicacion_id"):
-            tss = np.sort(grp["ts"].to_numpy(dtype=np.int64))
-            if len(tss) >= 2:
-                med = tss[len(tss) // 2]
-                in_w = tss[np.abs(tss - med) <= 1200]
-                if len(in_w) >= 2:
-                    windows[pid] = (int(in_w[0]) - 300, int(in_w[-1]) + 300)
-
-        if len(windows) < 4:
-            op_meta.append({"et": et, "nar": nar, "pos": pos, "windows": windows, "accounts": seed_set, "densidad": g_info["densidad"]})
+            bs = _rafagas(np.sort(grp["ts"].to_numpy(dtype=np.int64)))
+            if bs:
+                windows[pid] = bs
+        if sum(len(bs) for bs in windows.values()) < 3:
             continue
-
         op_meta.append({"et": et, "nar": nar, "pos": pos, "windows": windows, "accounts": seed_set, "densidad": g_info["densidad"]})
 
     # Si Louvain partió una misma campaña en dos subgrupos con igual (nar, pos) y ventanas superpuestas, unirlos
@@ -178,57 +192,65 @@ def refinar_con_narrativas(cuentas: pd.DataFrame, com: pd.DataFrame, info_c: dic
             if j in used:
                 continue
             m2 = op_meta[j]
-            if m1["nar"] and m1["nar"] == m2["nar"] and m1["pos"] == m2["pos"] and win_u and m2["windows"]:
+            if m1["nar"] == m2["nar"] and m1["pos"] == m2["pos"]:
                 inter = set(win_u) & set(m2["windows"])
                 if len(inter) / max(1, min(len(win_u), len(m2["windows"]))) >= 0.5:
                     acc_u |= m2["accounts"]
-                    for pid, (w0, w1) in m2["windows"].items():
-                        if pid in win_u:
-                            win_u[pid] = (min(win_u[pid][0], w0), max(win_u[pid][1], w1))
-                        else:
-                            win_u[pid] = (w0, w1)
+                    for pid, bs in m2["windows"].items():
+                        win_u[pid] = win_u.get(pid, []) + bs
                     used.add(j)
         m1_copy = dict(m1)
         m1_copy["accounts"] = acc_u
         m1_copy["windows"] = win_u
         merged.append(m1_copy)
 
-    # Expandir cuentas con cobertura y podar falsos positivos por operación
+    # Expandir cuentas con cobertura (en 2 pasadas) y podar falsos positivos por operación
     nuevos_grupos = {}
     nuevo_detalle = []
     for idx_g, m in enumerate(merged, start=1):
         et = f"g{idx_g:02d}"
-        seed_set = m["accounts"]
-        nar, pos, windows = m["nar"], m["pos"], m["windows"]
-        if not nar or len(windows) < 4:
-            final_set = seed_set - set(nuevos_grupos)
-        else:
-            sub_np = validos[(validos["narrativa"] == nar) & (validos["postura"] == pos)]
-            tot_np = Counter(sub_np["cuenta_id"])
+        cur_set = set(m["accounts"])
+        nar, pos = m["nar"], m["pos"]
+        sub_np = validos[(validos["narrativa"] == nar) & (validos["postura"] == pos)]
+        tot_np = Counter(sub_np["cuenta_id"])
+
+        for _ in range(2):
+            seed_np = sub_np[sub_np["cuenta_id"].isin(cur_set)]
+            windows = {}
+            for pid, grp in seed_np.groupby("publicacion_id"):
+                bs = _rafagas(np.sort(grp["ts"].to_numpy(dtype=np.int64)))
+                if bs:
+                    windows[pid] = bs
+            if sum(len(bs) for bs in windows.values()) < 3:
+                break
+
             hits = Counter()
             for pid, grp in sub_np.groupby("publicacion_id"):
                 if pid not in windows:
                     continue
-                w0, w1 = windows[pid]
-                en_ventana = grp.loc[(grp["ts"] >= w0) & (grp["ts"] <= w1), "cuenta_id"].unique()
-                for aid in en_ventana:
-                    hits[aid] += 1
+                bs = windows[pid]
+                ts_arr = grp["ts"].to_numpy(dtype=np.int64)
+                acc_arr = grp["cuenta_id"].to_numpy()
+                for w0, w1 in bs:
+                    for aid in set(acc_arr[(ts_arr >= w0) & (ts_arr <= w1)]):
+                        hits[aid] += 1
 
             rep_g = Counter()
             for a, b, nar_a, nar_b in resp_pares:
-                if b in seed_set and nar_a == nar:
+                if b in cur_set and nar_a == nar:
                     rep_g[a] += 1
-                if a in seed_set and nar_b == nar:
+                if a in cur_set and nar_b == nar:
                     rep_g[b] += 1
 
-            kept_seed = {a for a in seed_set if hits[a] >= 2 or rep_g[a] >= 2}
+            kept_seed = {a for a in cur_set if hits[a] >= 2 or rep_g[a] >= 2}
             rescued = {
                 a for a, h in hits.items()
-                if h >= 3 and (h / max(1, tot_np[a])) >= 0.6
-                and (h >= 4 or rep_g[a] >= 1 or (h / max(1, tot_np[a])) >= 0.75)
+                if (h >= 3 and (h / max(1, tot_np[a])) >= 0.6 and (h >= 4 or rep_g[a] >= 1 or (h / max(1, tot_np[a])) >= 0.75))
+                or (h >= 2 and h == tot_np[a] and acc_total_coms[a] <= 6)
             }
-            final_set = (kept_seed | rescued) - set(nuevos_grupos)
+            cur_set = kept_seed | rescued
 
+        final_set = cur_set - set(nuevos_grupos)
         for a in final_set:
             nuevos_grupos[a] = et
         nuevo_detalle.append({"grupo": et, "cuentas": len(final_set), "densidad": m["densidad"]})
