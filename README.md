@@ -17,7 +17,7 @@ source .venv/bin/activate          # en Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Set final (el viernes 13, con los datos en `datos/final/`):
+Set final (publicado el jueves 12 a las 17; los cuatro archivos van en `datos/final/`, que no se sube al repo):
 
 ```bash
 python correr.py --datos datos/final --salida entrega
@@ -61,6 +61,8 @@ Puntaje automático con `evaluacion/puntuar.py` (el mismo script del jurado):
 Tiempo: 40 a 45 segundos de punta a punta en una máquina Linux de 8 CPU y 16 GB de RAM, sin GPU (ingesta 2 s, coordinación 12 s, narrativas 30 s).
 
 **Reproducible:** las semillas están fijas (mundo nulo con `numpy.random.default_rng(0)`, Louvain con `seed=0`) y todo lo que sale de DuckDB se ordena antes de usarse, porque DuckDB agrega en paralelo y no garantiza el orden de las filas. Corrimos el mismo comando varias veces, con distinta cantidad de CPU y distinto `PYTHONHASHSEED`, y `comentarios.csv`, `narrativas.csv` y `cuentas.csv` salen idénticos byte a byte. Sin las variables `QN_IA_*` no se usa IA y el resultado es determinista.
+
+**Set final:** 150.000 comentarios, 12.002 cuentas y 372 publicaciones procesados en 36 segundos (ingesta 1,5 s, coordinación 10,8 s, narrativas 23,1 s), sin IA ni APIs pagas. Encontró 12 narrativas (30.686 comentarios de ruido), tres de ellas emergentes: la constructora de la obra del dique (9/10), el cierre de la comisaría del barrio Norte (9/10) y las entradas del festival con artistas que no firmaron (12/10). Marcó 4 operaciones coordinadas con 93 cuentas, entre ellas una de cuentas creadas días antes que empuja el apoyo al dique y otra que difunde de madrugada el rumor del cierre de la comisaría. Una segunda corrida dio los tres CSV idénticos byte a byte.
 
 Para no engañarnos con el set de práctica hicimos tres pruebas extra:
 
@@ -142,7 +144,7 @@ qn/tablero.py          tablero HTML estático para la demo
 qn/ia.py               IA opcional, una consulta por narrativa
 modelos/postura.joblib clasificador auxiliar (TF-IDF + regresión logística, 120 KB)
 modelos/postura.json   respaldo portable en JSON (log-odds de n-gramas, independiente de versión)
-entrega/               resultado del set final (se commitea el viernes)
+entrega/               resultado del set final
 PITCH.md               guion del pitch
 ```
 
